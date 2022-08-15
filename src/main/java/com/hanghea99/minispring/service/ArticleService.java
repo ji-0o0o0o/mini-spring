@@ -32,7 +32,7 @@ public class ArticleService {
 
     //Error 공유 게시글 생성
     public Article createArticle(ArticleRequestDto articleRequestDto) {
-        Member member = memberService.getSingingUser();
+        Member member = memberService.getSigningUser();
         Article article = new Article(articleRequestDto,member);
 
         member.addArticle(article);
@@ -77,7 +77,7 @@ public class ArticleService {
     public String updateArticle(Long id, ArticleRequestDto articleRequestDto) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-        Member member = memberService.getSingingUser();  //로그인 한 유저만 수정할 수있으니까
+        Member member = memberService.getSigningUser();  //로그인 한 유저만 수정할 수있으니까
 
         if(member.getUsername().equals(article.getUsername())){
             article.updateArticle(articleRequestDto);

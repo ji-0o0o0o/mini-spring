@@ -20,7 +20,7 @@ public class MemberService {
 		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 		return Long.valueOf(userId);
 	}
-	public Member getSingingUser(){
+	public Member getSigningUser(){
 		return memberRepository.findById(getSigningUserId())
 				.orElseThrow(()-> new RuntimeException("유저를 찾지 못했습니다."));
 	}

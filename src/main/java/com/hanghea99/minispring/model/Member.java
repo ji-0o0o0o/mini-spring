@@ -32,6 +32,8 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Authority authority;
 
+	private Language language;
+
 	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
 	private List<Article> articleList = new ArrayList<>();
@@ -70,5 +72,8 @@ public class Member {
 	}
 	public void removeHeart(Heart heart) {
 		this.heartList.remove(heart);
+	}
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 }
