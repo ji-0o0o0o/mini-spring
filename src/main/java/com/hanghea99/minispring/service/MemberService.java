@@ -22,7 +22,7 @@ public class MemberService {
 	}
 
 	public Member getSigningUser(){
-		return memberRepository.findById(1L)
+		return memberRepository.findById(getSigningUserId())
 				.orElseThrow(()-> new RuntimeException("유저를 찾지 못했습니다."));
 	}
 
