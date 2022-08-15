@@ -20,8 +20,9 @@ public class MemberService {
 		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 		return Long.valueOf(userId);
 	}
+
 	public Member getSigningUser(){
-		return memberRepository.findById(getSigningUserId())
+		return memberRepository.findById(1L)
 				.orElseThrow(()-> new RuntimeException("유저를 찾지 못했습니다."));
 	}
 

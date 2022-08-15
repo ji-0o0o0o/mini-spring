@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 //**
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4000"})
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class AuthController {
 	private final AuthService authService;
@@ -31,13 +31,50 @@ public class AuthController {
 
 
 	@PostMapping("/login")
-	public String login(@RequestBody MemberRequestDto memberRequestDto, HttpServletResponse httpServletResponse) {
+	public String login(@RequestBody MemberRequestDto memberRequestDto, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
 		TokenDto tokenDto = authService.login(memberRequestDto);
-//		httpServletResponse.setHeader("Authorization", "Bearer    " + tokenDto.getAccessToken());
-		Cookie jwt = new Cookie("jwt",  tokenDto.getAccessToken());
-		jwt.setMaxAge(1000 * 60 * 60 * 12);
-		httpServletResponse.addCookie(jwt);
+		httpServletResponse.setHeader("Authorization", "Bearer    " + tokenDto.getAccessToken());
+//		Cookie jwt = new Cookie("jwt",  tokenDto.getAccessToken());
+//		jwt.setMaxAge(1000 * 60 * 60 * 12);
+//		httpServletResponse.addCookie(jwt);
+		System.out.println("-----------------------토큰이당-------------------------");
+		System.out.println(httpServletRequest.getHeader("Authorization"));
+		System.out.println("-----------------------위는 어쏠 아래 쿠키-------------------------");
+		System.out.println(httpServletRequest.getHeader("Cookie"));
+		System.out.println("-----------------------토큰이당-------------------------");
+
+
+//		Cookie[] cookies = httpServletRequest.getCookies();
+//
+//		int i = 1;
+//		for(Cookie c :cookies){
+//			System.out.println(i+"벙");
+//			System.out.println(c.getName());
+//			System.out.println(c.getValue());
+//			i++;
+//		}
+		
 		return "환영합니다." + memberRequestDto.getUsername() + "님";
+	}
+
+	@GetMapping("test")
+	public String test(HttpServletRequest httpServletRequest){
+		System.out.println("-----------------------토큰이당당-------------------------");
+		System.out.println(httpServletRequest.getHeader("Authorization"));
+		System.out.println("-----------------------위는 어쏠 아래 쿠키-------------------------");
+		System.out.println(httpServletRequest.getHeader("Cookie"));
+		System.out.println("-----------------------라ㅏ라라라라-------------------------");
+//		Cookie[] cookies = httpServletRequest.getCookies();
+//		int i = 1;
+//		for(Cookie c :cookies){
+//			System.out.println(i+"번");
+//			System.out.println(c);
+//			i++;
+//		}
+		System.out.println("-----------------------토큰이당당당-------------------------");
+
+
+		return "안녕하세연 ㅎㅎ";
 	}
 
 	@PostMapping("/logout")

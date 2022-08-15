@@ -35,6 +35,9 @@ public class Article  extends Timestamped {
 
 	private Long selectedCommentId;
 
+	@Enumerated(EnumType.STRING)
+	private Language language;
+
 	@JsonIgnore
 	private int heartCnt;
 	private int commentCnt;
@@ -88,6 +91,10 @@ public class Article  extends Timestamped {
 	}
 	public void setImgUrl(String url) {
 		this.imgUrl = url;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 }
 

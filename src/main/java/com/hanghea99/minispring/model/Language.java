@@ -8,5 +8,7 @@ public enum Language {
 
     JS,
 
+    NULL,
+
 
 }

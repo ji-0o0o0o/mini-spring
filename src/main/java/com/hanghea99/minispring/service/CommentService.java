@@ -29,8 +29,7 @@ public class CommentService {
 
     //comment 작성하기
     public Comment creatComment(Long articleId, CommentRequestDto commentRequestDto) {
-        Member member = memberRepository.findById(memberService.getSigningUserId())
-                .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+        Member member = memberService.getSigningUser();
 
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
@@ -62,8 +61,7 @@ public class CommentService {
     public String updateComment(Long commentId, CommentRequestDto commentRequestDto) {
     Comment comment = commentRepository.findById(commentId)
             .orElseThrow(()-> new NullPointerException("해당 아이디가 존재하지 않습니다."));
-    Member member = memberRepository.findById(memberService.getSigningUserId())
-            .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+    Member member = memberService.getSigningUser();
 
 		if(member.getUsername().equals(comment.getUsername())){
         comment.updateComment(commentRequestDto);
@@ -73,8 +71,7 @@ public class CommentService {
 
     //comment 삭제하기
     public String deleteComment(Long commentId) {
-        Member member = memberRepository.findById(memberService.getSigningUserId())
-                .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+        Member member = memberService.getSigningUser();
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(()-> new NullPointerException("해당 댓글이 존재하지 않습니다."));
@@ -92,8 +89,7 @@ public class CommentService {
 
     //댓글 좋아요
     public String heartComment(Long commentId) {
-        Member member = memberRepository.findById(memberService.getSigningUserId())
-                .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+        Member member = memberService.getSigningUser();
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(()-> new NullPointerException("해당 댓글이 존재하지 않습니다."));
 
@@ -116,8 +112,7 @@ public class CommentService {
 
     @Transactional
     public String selectedComment(Long commentId) {
-        Member member = memberRepository.findById(memberService.getSigningUserId())
-            .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+        Member member = memberService.getSigningUser();
         Comment comment = commentRepository.findById(commentId)
             .orElseThrow(()-> new NullPointerException("해당 댓글이 존재하지 않습니다."));
 

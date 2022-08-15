@@ -1,11 +1,8 @@
 package com.hanghea99.minispring.service;
 
+import com.hanghea99.minispring.model.*;
 import com.hanghea99.minispring.model.dto.ArticleRequestDto;
 import com.hanghea99.minispring.model.dto.ArticleResponseDto;
-import com.hanghea99.minispring.model.Article;
-import com.hanghea99.minispring.model.Comment;
-import com.hanghea99.minispring.model.Heart;
-import com.hanghea99.minispring.model.Member;
 import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.repository.ArticleRepository;
 import com.hanghea99.minispring.repository.CommentRepository;
@@ -33,11 +30,57 @@ public class ArticleService {
     //Error 공유 게시글 생성
     public Article createArticle(ArticleRequestDto articleRequestDto) {
         Member member = memberService.getSigningUser();
-        Article article = new Article(articleRequestDto,member);
+        Article article = new Article(articleRequestDto, member);
+
+        if (articleRequestDto.getLanguage().equals("JAVA")) {
+            article.setLanguage(Language.JAVA);
+        } else if (articleRequestDto.getLanguage().equals("JS")) {
+            article.setLanguage(Language.JS);
+        } else if (articleRequestDto.getLanguage().equals("PYTHON")){
+            article.setLanguage(Language.PYTHON);
+        }else if (articleRequestDto.getLanguage() == null){
+            article.setLanguage(Language.NULL);
+        }else article.setLanguage(Language.NULL);
 
         member.addArticle(article);
         articleRepository.save(article);
         return article;
+    }
+
+    public List<ArticleResponseDto> readAllJava(){
+        List<Article> articleList = articleRepository.findAll();
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+            if(article.getLanguage().equals(Language.JAVA)){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+            }
+        }
+        return articleResponseDtoList;
+    }
+
+    public List<ArticleResponseDto> readAllJs(){
+        List<Article> articleList = articleRepository.findAll();
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+            if(article.getLanguage().equals(Language.JS)){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+            }
+        }
+        return articleResponseDtoList;
+    }
+
+    public List<ArticleResponseDto> readAllPython(){
+        List<Article> articleList = articleRepository.findAll();
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+            if(article.getLanguage().equals(Language.PYTHON)){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+            }
+        }
+        return articleResponseDtoList;
     }
 
     //전체게시물 조회
@@ -89,8 +132,7 @@ public class ArticleService {
     public String deleteArticle(Long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-        Member member = memberRepository.findById(memberService.getSigningUserId())   //로그인 한 유저만 수정할 수있으니까
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 사용자입니다. 다시 로그인 후 시도해주세요."));
+        Member member = memberService.getSigningUser();
 
         if(member.getUsername().equals(article.getUsername())){
             member.removeArticle(article);
@@ -101,8 +143,7 @@ public class ArticleService {
 
     //게시글 좋아요
     public String heartArticle(Long articleId) {
-        Member member = memberRepository.findById(memberService.getSigningUserId())
-                .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+        Member member = memberService.getSigningUser();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
