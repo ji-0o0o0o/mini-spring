@@ -2,6 +2,7 @@ package com.hanghea99.minispring.model.dto;
 
 import com.hanghea99.minispring.model.Article;
 import com.hanghea99.minispring.model.Comment;
+import com.hanghea99.minispring.model.Language;
 import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
@@ -15,6 +16,8 @@ public class ArticleIdDto {
 	private String title;
 	private String content;
 	private String imgUrl;
+
+	private Language language;
 	private Comment selectedComment;
 
 	public ArticleIdDto(Article article) {
@@ -24,6 +27,7 @@ public class ArticleIdDto {
 		this.title = article.getTitle();
 		this.content = article.getContent();
 		this.imgUrl = article.getImgUrl();
+		this.language = article.getLanguage();
 	}
 
 	public void setSelectedComment(Comment selectedComment) {

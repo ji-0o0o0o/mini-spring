@@ -3,6 +3,7 @@ package com.hanghea99.minispring.controller;
 
 import com.hanghea99.minispring.model.dto.*;
 import com.hanghea99.minispring.service.AuthService;
+import com.hanghea99.minispring.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 //**
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4000"})
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class AuthController {
 	private final AuthService authService;
+	private final MemberService memberService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
-		return ResponseEntity.ok(authService.signup(memberRequestDto));
+	public boolean signup(@RequestBody MemberRequestDto memberRequestDto) {
+		return authService.signup(memberRequestDto);
 	}
 
 	@PostMapping("/signup/check")
@@ -31,13 +33,37 @@ public class AuthController {
 
 
 	@PostMapping("/login")
-	public String login(@RequestBody MemberRequestDto memberRequestDto, HttpServletResponse httpServletResponse) {
+	public String login(@RequestBody MemberRequestDto memberRequestDto, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
 		TokenDto tokenDto = authService.login(memberRequestDto);
-//		httpServletResponse.setHeader("Authorization", "Bearer    " + tokenDto.getAccessToken());
-		Cookie jwt = new Cookie("jwt",  tokenDto.getAccessToken());
-		jwt.setMaxAge(1000 * 60 * 60 * 12);
-		httpServletResponse.addCookie(jwt);
+		httpServletResponse.setHeader("Authorization", "Bearer    " + tokenDto.getAccessToken());
+//		Cookie jwt = new Cookie("jwt",  tokenDto.getAccessToken());
+//		jwt.setMaxAge(1000 * 60 * 60 * 12);
+//		httpServletResponse.addCookie(jwt);
 		return "환영합니다." + memberRequestDto.getUsername() + "님";
+	}
+
+	@GetMapping("test")
+	public String test(HttpServletRequest httpServletRequest){
+
+		System.out.println("------------------Authorization------------------");
+		System.out.println(httpServletRequest.getHeader("Authorization"));
+		System.out.println("---------------------유저정보---------------------");
+		System.out.println(memberService.getSigningUser().getId());
+		System.out.println(memberService.getSigningUser().getUsername());
+
+		return "안녕하세연 ㅎㅎ";
+	}
+
+	@PostMapping ("tests")
+	public String tests(HttpServletRequest httpServletRequest){
+
+		System.out.println("------------------Authorization------------------");
+		System.out.println(httpServletRequest.getHeader("Authorization"));
+		System.out.println("---------------------유저정보---------------------");
+		System.out.println(memberService.getSigningUser().getId());
+		System.out.println(memberService.getSigningUser().getUsername());
+
+		return "안녕하세연 ㅎㅎ";
 	}
 
 	@PostMapping("/logout")

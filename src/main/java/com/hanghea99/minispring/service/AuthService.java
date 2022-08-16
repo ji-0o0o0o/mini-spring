@@ -27,13 +27,14 @@ public class AuthService {
 	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Transactional
-	public MemberResponseDto signup(MemberRequestDto memberRequestDto) {
+	public boolean signup(MemberRequestDto memberRequestDto) {
 		if (memberRepository.existsByUsername(memberRequestDto.getUsername())) {
-			throw new RuntimeException("이미 가입되어 있는 유저입니다");
+			return false;
 		}
 
 		Member member = memberRequestDto.toMember(passwordEncoder);
-		return MemberResponseDto.of(memberRepository.save(member));
+		MemberResponseDto.of(memberRepository.save(member));
+		return true;
 	}
 
 	public Boolean check(UsernameDto usernameDto) {

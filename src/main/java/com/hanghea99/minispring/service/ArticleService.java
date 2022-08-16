@@ -1,16 +1,12 @@
 package com.hanghea99.minispring.service;
 
+import com.hanghea99.minispring.model.*;
+import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.model.dto.ArticleRequestDto;
 import com.hanghea99.minispring.model.dto.ArticleResponseDto;
-import com.hanghea99.minispring.model.Article;
-import com.hanghea99.minispring.model.Comment;
-import com.hanghea99.minispring.model.Heart;
-import com.hanghea99.minispring.model.Member;
-import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.repository.ArticleRepository;
 import com.hanghea99.minispring.repository.CommentRepository;
 import com.hanghea99.minispring.repository.HeartRepository;
-import com.hanghea99.minispring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +19,6 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
     private final CommentRepository commentRepository;
@@ -32,8 +27,23 @@ public class ArticleService {
 
     //Error 공유 게시글 생성
     public Article createArticle(ArticleRequestDto articleRequestDto) {
-        Member member = memberService.getSingingUser();
-        Article article = new Article(articleRequestDto,member);
+        Member member = memberService.getSigningUser();
+        Article article = new Article(articleRequestDto, member);
+
+        switch (articleRequestDto.getLanguage()) {
+            case "JAVA":
+                article.setLanguage(Language.JAVA);
+                break;
+            case "JS":
+                article.setLanguage(Language.JS);
+                break;
+            case "PYTHON":
+                article.setLanguage(Language.PYTHON);
+                break;
+            default:
+                article.setLanguage(Language.NULL);
+                break;
+        }
 
         member.addArticle(article);
         articleRepository.save(article);
@@ -67,17 +77,45 @@ public class ArticleService {
     }
 
     //자바 게시물
+    public List<ArticleResponseDto> readAllJava(){
+        List<Article> articleList = articleRepository.findAllByLanguage(Language.JAVA);
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+        }
+        return articleResponseDtoList;
+    }
 
     //파이썬게시물
+    public List<ArticleResponseDto> readAllPython(){
+        List<Article> articleList = articleRepository.findAllByLanguage(Language.PYTHON);
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+        }
+        return articleResponseDtoList;
+    }
 
     //JS 게시물
+    public List<ArticleResponseDto> readAllJs(){
+        List<Article> articleList = articleRepository.findAllByLanguage(Language.JS);
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+        }
+        return articleResponseDtoList;
+    }
+
 
     //게시물 업데이트
     @Transactional
     public String updateArticle(Long id, ArticleRequestDto articleRequestDto) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-        Member member = memberService.getSingingUser();  //로그인 한 유저만 수정할 수있으니까
+        Member member = memberService.getSigningUser();  //로그인 한 유저만 수정할 수있으니까
 
         if(member.getUsername().equals(article.getUsername())){
             article.updateArticle(articleRequestDto);
@@ -89,8 +127,7 @@ public class ArticleService {
     public String deleteArticle(Long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-        Member member = memberRepository.findById(memberService.getSigningUserId())   //로그인 한 유저만 수정할 수있으니까
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 사용자입니다. 다시 로그인 후 시도해주세요."));
+        Member member = memberService.getSigningUser();
 
         if(member.getUsername().equals(article.getUsername())){
             member.removeArticle(article);
@@ -101,8 +138,7 @@ public class ArticleService {
 
     //게시글 좋아요
     public String heartArticle(Long articleId) {
-        Member member = memberRepository.findById(memberService.getSigningUserId())
-                .orElseThrow(() -> new NullPointerException("존재하지 않는 사용자입니다."));
+        Member member = memberService.getSigningUser();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
@@ -122,6 +158,4 @@ public class ArticleService {
             return article.getId() + "번 게시물 좋아요 취소" + ", 총 좋아요 수 : " + article.getHeartCnt();
         }
     }
-
-
 }
