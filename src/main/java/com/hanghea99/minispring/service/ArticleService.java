@@ -112,19 +112,19 @@ public class ArticleService {
 
     //게시물 업데이트
     @Transactional
-    public String updateArticle(Long id, ArticleRequestDto articleRequestDto) {
+    public Long updateArticle(Long id, ArticleRequestDto articleRequestDto) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
         Member member = memberService.getSigningUser();  //로그인 한 유저만 수정할 수있으니까
 
         if(member.getUsername().equals(article.getUsername())){
             article.updateArticle(articleRequestDto);
-            return "수정 성공";
-        }else return "수정 실패";
+            return 0L;
+        }else return id;
     }
 
     //게시물 지우기
-    public String deleteArticle(Long id) {
+    public Long deleteArticle(Long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
         Member member = memberService.getSigningUser();
@@ -132,8 +132,8 @@ public class ArticleService {
         if(member.getUsername().equals(article.getUsername())){
             member.removeArticle(article);
             articleRepository.delete(article);
-            return "삭제 성공";
-        }else return "삭제 실패";
+            return 0L;
+        }else return id;
     }
 
     //게시글 좋아요

@@ -53,12 +53,12 @@ public class ArticleController {
 
     //게시물 업데이트
     @PatchMapping("/{articleId}")
-    public String updateArticle(@PathVariable Long articleId, @RequestBody ArticleRequestDto articleRequestDto){
+    public Long updateArticle(@PathVariable Long articleId, @RequestBody ArticleRequestDto articleRequestDto){
         return articleService.updateArticle(articleId, articleRequestDto);
     }
     //게시물 지우기
     @DeleteMapping("/{articleId}")
-    public String deleteArticle(@PathVariable Long articleId){
+    public Long deleteArticle(@PathVariable Long articleId){
         return  articleService.deleteArticle(articleId);
     }
 

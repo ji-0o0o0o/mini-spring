@@ -58,19 +58,19 @@ public class CommentService {
 
     //comment 수정하기
     @Transactional
-    public String updateComment(Long commentId, CommentRequestDto commentRequestDto) {
+    public Long updateComment(Long commentId, CommentRequestDto commentRequestDto) {
     Comment comment = commentRepository.findById(commentId)
             .orElseThrow(()-> new NullPointerException("해당 아이디가 존재하지 않습니다."));
     Member member = memberService.getSigningUser();
 
 		if(member.getUsername().equals(comment.getUsername())){
         comment.updateComment(commentRequestDto);
-        return "수정 성공";
-    }else return "수정 실패";
+        return 0L;
+    }else return commentId;
 }
 
     //comment 삭제하기
-    public String deleteComment(Long commentId) {
+    public Long deleteComment(Long commentId) {
         Member member = memberService.getSigningUser();
 
         Comment comment = commentRepository.findById(commentId)
@@ -83,8 +83,8 @@ public class CommentService {
             member.removeComment(comment);
             article.removeComment(comment);
             commentRepository.delete(comment);
-            return "삭제 성공";
-        }else return "삭제 실패";
+            return 0L;
+        }else return commentId;
     }
 
     //댓글 좋아요
