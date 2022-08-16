@@ -4,9 +4,11 @@ import com.hanghea99.minispring.model.*;
 import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.model.dto.ArticleRequestDto;
 import com.hanghea99.minispring.model.dto.ArticleResponseDto;
+import com.hanghea99.minispring.model.dto.memeDto;
 import com.hanghea99.minispring.repository.ArticleRepository;
 import com.hanghea99.minispring.repository.CommentRepository;
 import com.hanghea99.minispring.repository.HeartRepository;
+import com.hanghea99.minispring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final MemberService memberService;
+
+    private final MemberRepository memberRepository;
 
     private final CommentRepository commentRepository;
 
@@ -157,5 +161,42 @@ public class ArticleService {
             heartRepository.delete(heart);
             return article.getId() + "번 게시물 좋아요 취소" + ", 총 좋아요 수 : " + article.getHeartCnt();
         }
+    }
+
+    @Transactional
+	public String meme(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+            .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+        Member member = memberService.getSigningUser();
+
+        int cnt = 4;
+
+        if(!article.getMemberId().contains(member.getId())){
+            if (article.getMemberId().size() < cnt){
+                article.addMeme(member.getId());
+                article.setMemeCnt(article.getMemberId().size());
+                return member.getUsername() + "님 등록완료! 총 인원 : " + article.getMemberId().size() + "남은 모집 인원 :" + (cnt-article.getMemberId().size()) +"명";
+            }
+            return "모집인원이 초과되었습니다 총 모집인원 : "+cnt+"명"+" / 현재 모집인원"+ article.getMemberId().size();
+        }else {
+            article.removeMeme(member.getId());
+            article.setMemeCnt(article.getMemberId().size());
+            return member.getUsername() + "님 등록취소! 총 인원 : " + article.getMemberId().size() + "남은 모집 인원 :" + (cnt-article.getMemberId().size()) +"명";
+        }
+
+	}
+
+    public memeDto mememe(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+            .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+
+        memeDto memeDto = new memeDto(article);
+        for (int i=0; i<article.getMemeCnt(); i++){
+            Member member = memberRepository.findById(article.getMemberId().get(i))
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+            memeDto.add(member);
+        }
+
+        return memeDto;
     }
 }

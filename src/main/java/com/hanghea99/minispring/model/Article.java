@@ -55,6 +55,12 @@ public class Article  extends Timestamped {
 	@JsonIgnore
 	private List<Heart> heartList = new ArrayList<>();
 
+	@Column
+	@ElementCollection
+	private List<Long> memberId;
+
+	private int memeCnt;
+
 
 	public Article(ArticleRequestDto articleRequestDto, Member member) {
 		this.username = member.getUsername();
@@ -95,6 +101,17 @@ public class Article  extends Timestamped {
 
 	public void setLanguage(Language language) {
 		this.language = language;
+	}
+
+	public void addMeme(Long mem){
+		this.memberId.add(mem);
+	}
+	public void removeMeme(Long mem){
+		this.memberId.remove(mem);
+	}
+
+	public void setMemeCnt(int memeCnt) {
+		this.memeCnt = memeCnt;
 	}
 }
 

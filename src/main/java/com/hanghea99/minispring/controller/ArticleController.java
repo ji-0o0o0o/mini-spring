@@ -1,9 +1,10 @@
 package com.hanghea99.minispring.controller;
 
-import com.hanghea99.minispring.model.dto.ArticleRequestDto;
-import com.hanghea99.minispring.model.dto.ArticleResponseDto;
 import com.hanghea99.minispring.model.Article;
 import com.hanghea99.minispring.model.dto.ArticleIdDto;
+import com.hanghea99.minispring.model.dto.ArticleRequestDto;
+import com.hanghea99.minispring.model.dto.ArticleResponseDto;
+import com.hanghea99.minispring.model.dto.memeDto;
 import com.hanghea99.minispring.service.ArticleService;
 import com.hanghea99.minispring.service.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,16 @@ public class ArticleController {
     @PostMapping("/image/{articleId}")
     public String upload(@PathVariable Long articleId, MultipartFile multipartFile, String dirName) throws IOException {
         return s3Uploader.upload(articleId, multipartFile, "img");
+    }
+
+    @PostMapping("/mem/{articleId}")
+    public String meme(@PathVariable Long articleId) throws IOException {
+        return articleService.meme(articleId);
+    }
+
+    @GetMapping("/mem/{articleId}")
+    public memeDto mememe(@PathVariable Long articleId) throws IOException {
+        return articleService.mememe(articleId);
     }
 
     //전체 게시물 조회
