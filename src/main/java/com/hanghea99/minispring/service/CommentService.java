@@ -65,8 +65,8 @@ public class CommentService {
 
 		if(member.getUsername().equals(comment.getUsername())){
         comment.updateComment(commentRequestDto);
-        return 0L;
-    }else return commentId;
+        return commentId;
+    }else return 0L;
 }
 
     //comment 삭제하기
@@ -83,8 +83,8 @@ public class CommentService {
             member.removeComment(comment);
             article.removeComment(comment);
             commentRepository.delete(comment);
-            return 0L;
-        }else return commentId;
+            return commentId;
+        }else return 0L;
     }
 
     //댓글 좋아요

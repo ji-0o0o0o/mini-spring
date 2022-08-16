@@ -70,7 +70,6 @@ public class Article  extends Timestamped {
 	}
 
 	public void updateArticle(ArticleRequestDto articleRequestDto) {
-		this.title = articleRequestDto.getTitle();
 		this.content = articleRequestDto.getContent();
 	}
 

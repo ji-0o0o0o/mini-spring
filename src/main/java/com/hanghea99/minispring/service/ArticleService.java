@@ -123,8 +123,8 @@ public class ArticleService {
 
         if(member.getUsername().equals(article.getUsername())){
             article.updateArticle(articleRequestDto);
-            return 0L;
-        }else return id;
+            return id;
+        }else return 0L;
     }
 
     //게시물 지우기
@@ -136,8 +136,8 @@ public class ArticleService {
         if(member.getUsername().equals(article.getUsername())){
             member.removeArticle(article);
             articleRepository.delete(article);
-            return 0L;
-        }else return id;
+            return id;
+        }else return 0L;
     }
 
     //게시글 좋아요

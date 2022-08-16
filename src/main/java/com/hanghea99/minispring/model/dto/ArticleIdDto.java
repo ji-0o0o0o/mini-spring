@@ -6,6 +6,7 @@ import com.hanghea99.minispring.model.Language;
 import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Getter
 public class ArticleIdDto {
@@ -16,7 +17,7 @@ public class ArticleIdDto {
 	private String title;
 	private String content;
 	private String imgUrl;
-
+	private List<Comment> commentList;
 	private Language language;
 	private Comment selectedComment;
 
@@ -27,6 +28,7 @@ public class ArticleIdDto {
 		this.title = article.getTitle();
 		this.content = article.getContent();
 		this.imgUrl = article.getImgUrl();
+		this.commentList =article.getCommentList();
 		this.language = article.getLanguage();
 	}
 
