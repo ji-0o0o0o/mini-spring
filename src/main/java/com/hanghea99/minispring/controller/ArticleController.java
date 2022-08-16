@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "*", allowedHeaders = "*")
-@RequestMapping("/api/article")
+@RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
     private final S3Uploader s3Uploader;

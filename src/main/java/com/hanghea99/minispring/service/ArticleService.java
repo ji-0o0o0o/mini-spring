@@ -1,13 +1,12 @@
 package com.hanghea99.minispring.service;
 
 import com.hanghea99.minispring.model.*;
+import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.model.dto.ArticleRequestDto;
 import com.hanghea99.minispring.model.dto.ArticleResponseDto;
-import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.repository.ArticleRepository;
 import com.hanghea99.minispring.repository.CommentRepository;
 import com.hanghea99.minispring.repository.HeartRepository;
-import com.hanghea99.minispring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,6 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
     private final CommentRepository commentRepository;
@@ -38,49 +36,11 @@ public class ArticleService {
             article.setLanguage(Language.JS);
         } else if (articleRequestDto.getLanguage().equals("PYTHON")){
             article.setLanguage(Language.PYTHON);
-        }else if (articleRequestDto.getLanguage() == null){
-            article.setLanguage(Language.NULL);
         }else article.setLanguage(Language.NULL);
 
         member.addArticle(article);
         articleRepository.save(article);
         return article;
-    }
-
-    public List<ArticleResponseDto> readAllJava(){
-        List<Article> articleList = articleRepository.findAll();
-        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
-
-        for (Article article : articleList){
-            if(article.getLanguage().equals(Language.JAVA)){
-                articleResponseDtoList.add(new ArticleResponseDto(article));
-            }
-        }
-        return articleResponseDtoList;
-    }
-
-    public List<ArticleResponseDto> readAllJs(){
-        List<Article> articleList = articleRepository.findAll();
-        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
-
-        for (Article article : articleList){
-            if(article.getLanguage().equals(Language.JS)){
-                articleResponseDtoList.add(new ArticleResponseDto(article));
-            }
-        }
-        return articleResponseDtoList;
-    }
-
-    public List<ArticleResponseDto> readAllPython(){
-        List<Article> articleList = articleRepository.findAll();
-        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
-
-        for (Article article : articleList){
-            if(article.getLanguage().equals(Language.PYTHON)){
-                articleResponseDtoList.add(new ArticleResponseDto(article));
-            }
-        }
-        return articleResponseDtoList;
     }
 
     //전체게시물 조회
@@ -110,10 +70,38 @@ public class ArticleService {
     }
 
     //자바 게시물
+    public List<ArticleResponseDto> readAllJava(){
+        List<Article> articleList = articleRepository.findAllByLanguage(Language.JAVA);
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+        }
+        return articleResponseDtoList;
+    }
 
     //파이썬게시물
+    public List<ArticleResponseDto> readAllPython(){
+        List<Article> articleList = articleRepository.findAllByLanguage(Language.PYTHON);
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+        }
+        return articleResponseDtoList;
+    }
 
     //JS 게시물
+    public List<ArticleResponseDto> readAllJs(){
+        List<Article> articleList = articleRepository.findAllByLanguage(Language.JS);
+        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+
+        for (Article article : articleList){
+                articleResponseDtoList.add(new ArticleResponseDto(article));
+        }
+        return articleResponseDtoList;
+    }
+
 
     //게시물 업데이트
     @Transactional
@@ -163,6 +151,4 @@ public class ArticleService {
             return article.getId() + "번 게시물 좋아요 취소" + ", 총 좋아요 수 : " + article.getHeartCnt();
         }
     }
-
-
 }

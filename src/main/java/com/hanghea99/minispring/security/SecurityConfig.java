@@ -30,9 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
-	public void configure(WebSecurity web) {
-		web.ignoring()
-				.antMatchers("/h2-console/**", "/favicon.ico");
+	public void configure(WebSecurity webSecurity) {
+		webSecurity.ignoring()
+				.antMatchers("/h2-console/**", "/favicon.ico"); // h2콘솔 == 열어주겠다. 보안해제
 	}
 
 	@Override
@@ -54,12 +54,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.and()
 				.authorizeRequests()
-				.antMatchers("/api/signup").permitAll()
+				.antMatchers("/api/signup").permitAll() //permitAll = 열어주겠다.
 				.antMatchers("/api/signup/check").permitAll()
 				.antMatchers("/api/login").permitAll()
 				.antMatchers("/api/logout").permitAll()
+				.antMatchers("/api/test").permitAll()
 				.antMatchers("/api/**").permitAll()
-				.anyRequest().authenticated()
+				.anyRequest().authenticated()// authenticated = 닫겠다.
 
 				.and()
 				.apply(new JwtSecurityConfig(tokenProvider));

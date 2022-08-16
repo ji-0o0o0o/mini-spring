@@ -6,7 +6,6 @@ import com.hanghea99.minispring.service.AuthService;
 import com.hanghea99.minispring.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -23,8 +22,8 @@ public class AuthController {
 	private final MemberService memberService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
-		return ResponseEntity.ok(authService.signup(memberRequestDto));
+	public boolean signup(@RequestBody MemberRequestDto memberRequestDto) {
+		return authService.signup(memberRequestDto);
 	}
 
 	@PostMapping("/signup/check")
@@ -40,47 +39,29 @@ public class AuthController {
 //		Cookie jwt = new Cookie("jwt",  tokenDto.getAccessToken());
 //		jwt.setMaxAge(1000 * 60 * 60 * 12);
 //		httpServletResponse.addCookie(jwt);
-		System.out.println("-----------------------토큰이당-------------------------");
-		System.out.println(httpServletRequest.getHeader("Authorization"));
-		System.out.println("-----------------------위는 어쏠 아래 쿠키-------------------------");
-		System.out.println(httpServletRequest.getHeader("Cookie"));
-		System.out.println("-----------------------토큰이당-------------------------");
-
-
-//		Cookie[] cookies = httpServletRequest.getCookies();
-//
-//		int i = 1;
-//		for(Cookie c :cookies){
-//			System.out.println(i+"벙");
-//			System.out.println(c.getName());
-//			System.out.println(c.getValue());
-//			i++;
-//		}
-		
 		return "환영합니다." + memberRequestDto.getUsername() + "님";
 	}
 
-	@PostMapping("test")
+	@GetMapping("test")
 	public String test(HttpServletRequest httpServletRequest){
-		System.out.println("-----------------------토큰이당당-------------------------");
+
+		System.out.println("------------------Authorization------------------");
 		System.out.println(httpServletRequest.getHeader("Authorization"));
-		System.out.println("-----------------------위는 어쏠 아래 쿠키-------------------------");
-		System.out.println(httpServletRequest.getHeader("Cookie"));
-		System.out.println("-----------------------라ㅏ라라라라-------------------------");
-		String name = SecurityContextHolder.getContext().getAuthentication().getName();
-
-		System.out.println("제발여 살려주세여");
-		System.out.println(name);
+		System.out.println("---------------------유저정보---------------------");
+		System.out.println(memberService.getSigningUser().getId());
 		System.out.println(memberService.getSigningUser().getUsername());
-//		Cookie[] cookies = httpServletRequest.getCookies();
-//		int i = 1;
-//		for(Cookie c :cookies){
-//			System.out.println(i+"번");
-//			System.out.println(c);
-//			i++;
-//		}
-		System.out.println("-----------------------토큰이당당당-------------------------");
 
+		return "안녕하세연 ㅎㅎ";
+	}
+
+	@PostMapping ("tests")
+	public String tests(HttpServletRequest httpServletRequest){
+
+		System.out.println("------------------Authorization------------------");
+		System.out.println(httpServletRequest.getHeader("Authorization"));
+		System.out.println("---------------------유저정보---------------------");
+		System.out.println(memberService.getSigningUser().getId());
+		System.out.println(memberService.getSigningUser().getUsername());
 
 		return "안녕하세연 ㅎㅎ";
 	}

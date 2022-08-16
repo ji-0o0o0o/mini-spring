@@ -33,6 +33,7 @@ public class Member {
 	private Authority authority;
 
 
+
 	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
 	private List<Article> articleList = new ArrayList<>();
