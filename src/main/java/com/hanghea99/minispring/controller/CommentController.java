@@ -29,12 +29,12 @@ public class CommentController {
     }
     //comment 수정하기
     @PatchMapping("/{commentId}")
-    public String updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto) {
+    public Long updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto) {
         return commentService.updateComment(commentId, commentRequestDto);
     }
     //comment 삭제하기
     @DeleteMapping("/{commentId}")
-    public String deleteComment(@PathVariable Long commentId) {
+    public Long deleteComment(@PathVariable Long commentId) {
         return commentService.deleteComment(commentId);
     }
 

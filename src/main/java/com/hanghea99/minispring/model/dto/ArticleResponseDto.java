@@ -14,7 +14,7 @@ public class ArticleResponseDto {
     private Long id;
     private String username;
     private String title;
-
+    private String content;
     private Boolean isDone;
 
     public ArticleResponseDto(Article article) {
@@ -22,6 +22,7 @@ public class ArticleResponseDto {
         this.id = article.getId();
         this.username = article.getUsername();
         this.title = article.getTitle();
+        this.content = article.getContent();
         this.isDone = article.getIsDone();
     }
 
