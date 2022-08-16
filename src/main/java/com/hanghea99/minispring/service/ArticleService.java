@@ -30,13 +30,20 @@ public class ArticleService {
         Member member = memberService.getSigningUser();
         Article article = new Article(articleRequestDto, member);
 
-        if (articleRequestDto.getLanguage().equals("JAVA")) {
-            article.setLanguage(Language.JAVA);
-        } else if (articleRequestDto.getLanguage().equals("JS")) {
-            article.setLanguage(Language.JS);
-        } else if (articleRequestDto.getLanguage().equals("PYTHON")){
-            article.setLanguage(Language.PYTHON);
-        }else article.setLanguage(Language.NULL);
+        switch (articleRequestDto.getLanguage()) {
+            case "JAVA":
+                article.setLanguage(Language.JAVA);
+                break;
+            case "JS":
+                article.setLanguage(Language.JS);
+                break;
+            case "PYTHON":
+                article.setLanguage(Language.PYTHON);
+                break;
+            default:
+                article.setLanguage(Language.NULL);
+                break;
+        }
 
         member.addArticle(article);
         articleRepository.save(article);
