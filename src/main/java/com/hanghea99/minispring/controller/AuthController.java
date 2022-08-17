@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 //**
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://localhost:3000","https://error-project.vercel.app/"}, exposedHeaders = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class AuthController {
 	private final AuthService authService;

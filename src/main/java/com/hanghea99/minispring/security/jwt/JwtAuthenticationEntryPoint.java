@@ -47,19 +47,19 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		responseJson.put("code", code.getCode());
 		switch (code.getCode()) {
 			case "1004":
-				response.setStatus(HttpServletResponse.SC_OK);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				break;
 			case "1003":
-				response.setStatus(HttpServletResponse.SC_OK);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				break;
 			case "1005":
-				response.setStatus(HttpServletResponse.SC_OK);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				break;
 			case "1006":
-				response.setStatus(HttpServletResponse.SC_OK);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				break;
 			case "1007":
-				response.setStatus(HttpServletResponse.SC_OK);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				break;
 		}
 

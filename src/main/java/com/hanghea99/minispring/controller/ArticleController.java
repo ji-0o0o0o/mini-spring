@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://localhost:3000","https://error-project.vercel.app/"}, exposedHeaders = "*", allowedHeaders = "*")
 @RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
