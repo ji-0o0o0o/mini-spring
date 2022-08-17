@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000","https://error-project.vercel.app/"}, exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://localhost:3000","https://error-project.vercel.app"}, exposedHeaders = "*", allowedHeaders = "*")
 @RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
@@ -36,12 +36,12 @@ public class ArticleController {
     }
 
     @PostMapping("/mem/{articleId}")
-    public String meme(@PathVariable Long articleId) throws IOException {
+    public String meme(@PathVariable Long articleId) {
         return articleService.meme(articleId);
     }
 
     @GetMapping("/mem/{articleId}")
-    public memeDto mememe(@PathVariable Long articleId) throws IOException {
+    public memeDto mememe(@PathVariable Long articleId) {
         return articleService.mememe(articleId);
     }
 
