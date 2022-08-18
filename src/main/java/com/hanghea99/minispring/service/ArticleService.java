@@ -30,7 +30,7 @@ public class ArticleService {
     private  final HeartRepository heartRepository;
 
     //Error 공유 게시글 생성
-    public Article createArticle(ArticleRequestDto articleRequestDto) {
+    public ArticleIdDto createArticle(ArticleRequestDto articleRequestDto) {
         Member member = memberService.getSigningUser();
         Article article = new Article(articleRequestDto, member);
 
@@ -51,12 +51,12 @@ public class ArticleService {
 
         member.addArticle(article);
         articleRepository.save(article);
-        return article;
+        return new ArticleIdDto(article);
     }
 
     //전체게시물 조회
     public List<ArticleResponseDto> readAllArticle() {
-        List<Article> articleList = articleRepository.findAll();
+        List<Article> articleList = articleRepository.findAllByOrderByCreatedAtDesc();
         List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
 
         for (Article article:articleList) {
@@ -144,7 +144,7 @@ public class ArticleService {
     public String heartArticle(Long articleId) {
         Member member = memberService.getSigningUser();
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
         if(heartRepository.findByMemberAndArticle(member, article) == null){
             Heart heart = new Heart(member, article);
@@ -166,7 +166,7 @@ public class ArticleService {
     @Transactional
 	public String meme(Long articleId) {
         Article article = articleRepository.findById(articleId)
-            .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+            .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
         Member member = memberService.getSigningUser(); // 로그인 맴버
 
         int cnt = 4;
@@ -183,12 +183,11 @@ public class ArticleService {
             article.setMemeCnt(article.getMemberId().size());
             return member.getUsername() + "님 등록취소! 총 인원 : " + article.getMemberId().size() + "남은 모집 인원 :" + (cnt-article.getMemberId().size()) +"명";
         }
-
 	}
 
     public memeDto mememe(Long articleId) {
         Article article = articleRepository.findById(articleId)
-            .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+            .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
         memeDto memeDto = new memeDto(article);
         for (int i=0; i<article.getMemeCnt(); i++){

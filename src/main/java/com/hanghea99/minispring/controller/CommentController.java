@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000","https://error-project.vercel.app"}, exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RequestMapping("/api/comment")
 public class CommentController {
 

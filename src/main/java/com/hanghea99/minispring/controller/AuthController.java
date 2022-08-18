@@ -1,7 +1,11 @@
 package com.hanghea99.minispring.controller;
 
 
-import com.hanghea99.minispring.model.dto.*;
+import com.hanghea99.minispring.model.dto.MemberRequestDto;
+import com.hanghea99.minispring.model.dto.TokenDto;
+import com.hanghea99.minispring.model.dto.TokenRequestDto;
+import com.hanghea99.minispring.model.dto.UsernameDto;
+import com.hanghea99.minispring.model.isloginDto;
 import com.hanghea99.minispring.service.AuthService;
 import com.hanghea99.minispring.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 //**
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"https://error-project.vercel.app","http://localhost:3000"}, exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class AuthController {
 	private final AuthService authService;
@@ -29,6 +33,19 @@ public class AuthController {
 	@PostMapping("/signup/check")
 	public Boolean check(@RequestBody UsernameDto usernameDto){
 		return authService.check(usernameDto);
+	}
+
+	@GetMapping("islogin")
+	public isloginDto username(HttpServletRequest httpServletRequest){
+		isloginDto isloginDto = new isloginDto();
+		System.out.println(httpServletRequest.getHeader("Authorization"));
+		if (httpServletRequest.getHeader("Authorization") != null){
+			isloginDto.setUserName(memberService.getSigningUser().getUsername());
+			isloginDto.setIsLogin(true);
+			return isloginDto;
+		}else {
+			return isloginDto;
+		}
 	}
 
 

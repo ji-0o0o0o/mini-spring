@@ -1,6 +1,5 @@
 package com.hanghea99.minispring.controller;
 
-import com.hanghea99.minispring.model.Article;
 import com.hanghea99.minispring.model.dto.ArticleIdDto;
 import com.hanghea99.minispring.model.dto.ArticleRequestDto;
 import com.hanghea99.minispring.model.dto.ArticleResponseDto;
@@ -16,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000","https://error-project.vercel.app"}, exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
@@ -25,7 +24,7 @@ public class ArticleController {
 
     //Error 공유 게시글 생성
     @PostMapping("")
-    public Article createArticle(@RequestBody ArticleRequestDto articleRequestDto){
+    public ArticleIdDto createArticle(@RequestBody ArticleRequestDto articleRequestDto){
         return articleService.createArticle(articleRequestDto);
     }
 
