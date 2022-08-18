@@ -4,10 +4,7 @@ package com.hanghea99.minispring.service;
 
 import com.hanghea99.minispring.model.Member;
 import com.hanghea99.minispring.model.RefreshToken;
-import com.hanghea99.minispring.model.dto.MemberRequestDto;
-import com.hanghea99.minispring.model.dto.MemberResponseDto;
-import com.hanghea99.minispring.model.dto.TokenDto;
-import com.hanghea99.minispring.model.dto.TokenRequestDto;
+import com.hanghea99.minispring.model.dto.*;
 import com.hanghea99.minispring.repository.MemberRepository;
 import com.hanghea99.minispring.repository.RefreshTokenRepository;
 import com.hanghea99.minispring.security.jwt.TokenProvider;
@@ -30,13 +27,18 @@ public class AuthService {
 	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Transactional
-	public MemberResponseDto signup(MemberRequestDto memberRequestDto) {
+	public boolean signup(MemberRequestDto memberRequestDto) {
 		if (memberRepository.existsByUsername(memberRequestDto.getUsername())) {
-			throw new RuntimeException("이미 가입되어 있는 유저입니다");
+			return false;
 		}
 
 		Member member = memberRequestDto.toMember(passwordEncoder);
-		return MemberResponseDto.of(memberRepository.save(member));
+		MemberResponseDto.of(memberRepository.save(member));
+		return true;
+	}
+
+	public Boolean check(UsernameDto usernameDto) {
+		return !memberRepository.existsByUsername(usernameDto.getUsername());
 	}
 
 	@Transactional
@@ -45,10 +47,8 @@ public class AuthService {
 
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-		// 3. 인증 정보를 기반으로 JWT 토큰 생성
 		TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
-		// 4. RefreshToken 저장
 		RefreshToken refreshToken = RefreshToken.builder()
 				.key(authentication.getName())
 				.value(tokenDto.getRefreshToken())
@@ -62,16 +62,16 @@ public class AuthService {
 	@Transactional
 	public TokenDto reissue(TokenRequestDto tokenRequestDto) {
 		if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-			throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
+			throw new IllegalArgumentException("Refresh Token 이 유효하지 않습니다.");
 		}
 
 		Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
 
 		RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-				.orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("로그아웃 된 사용자입니다."));
 
 		if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-			throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+			throw new IllegalArgumentException("토큰의 유저 정보가 일치하지 않습니다.");
 		}
 
 		TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
@@ -81,4 +81,6 @@ public class AuthService {
 
 		return tokenDto;
 	}
+
+
 }
