@@ -32,7 +32,7 @@ public class CommentService {
         Member member = memberService.getSigningUser();
 
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
         Comment comment = new Comment(commentRequestDto, article, member);
 
@@ -60,7 +60,7 @@ public class CommentService {
     @Transactional
     public Long updateComment(Long commentId, CommentRequestDto commentRequestDto) {
     Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(()-> new NullPointerException("해당 아이디가 존재하지 않습니다."));
+            .orElseThrow(()-> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
     Member member = memberService.getSigningUser();
 
 		if(member.getUsername().equals(comment.getUsername())){
@@ -74,10 +74,10 @@ public class CommentService {
         Member member = memberService.getSigningUser();
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(()-> new NullPointerException("해당 댓글이 존재하지 않습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
         Article article = articleRepository.findById(comment.getArticle().getId())
-                .orElseThrow(()-> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
         if(member.getUsername().equals(comment.getUsername())){
             member.removeComment(comment);
@@ -91,7 +91,7 @@ public class CommentService {
     public String heartComment(Long commentId) {
         Member member = memberService.getSigningUser();
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(()-> new NullPointerException("해당 댓글이 존재하지 않습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
         if(heartRepository.findByMemberAndComment(member, comment) == null){
             Heart heart = new Heart(member, comment);
@@ -114,7 +114,7 @@ public class CommentService {
     public String selectedComment(Long commentId) {
         Member member = memberService.getSigningUser();
         Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(()-> new NullPointerException("해당 댓글이 존재하지 않습니다."));
+            .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
         Article article = comment.getArticle();
 
