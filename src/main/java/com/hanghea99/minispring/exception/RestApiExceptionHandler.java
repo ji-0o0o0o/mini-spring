@@ -9,7 +9,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RestApiExceptionHandler {
 
 	@ExceptionHandler(value = { IllegalArgumentException.class })
-	public ResponseEntity<Object> handleApiRequestException(IllegalArgumentException ex, RuntimeException run) {
+	public ResponseEntity<Object> handleApiRequestException(IllegalArgumentException ex) {
+		RestApiException restApiException = new RestApiException();
+		restApiException.setHttpStatus(HttpStatus.BAD_REQUEST);
+		restApiException.setErrorMessage(ex.getMessage());
+
+		return new ResponseEntity(
+				restApiException,
+				HttpStatus.BAD_REQUEST
+		);
+	}
+
+	@ExceptionHandler(value = { RuntimeException.class })
+	public ResponseEntity<Object> handleApiRequestException(RuntimeException ex) {
 		RestApiException restApiException = new RestApiException();
 		restApiException.setHttpStatus(HttpStatus.BAD_REQUEST);
 		restApiException.setErrorMessage(ex.getMessage());

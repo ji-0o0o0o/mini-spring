@@ -166,7 +166,7 @@ public class ArticleService {
     @Transactional
 	public String meme(Long articleId) {
         Article article = articleRepository.findById(articleId)
-            .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+            .orElseThrow(()-> new RuntimeException("해당 게시글이 존재하지 않습니다."));
         Member member = memberService.getSigningUser(); // 로그인 맴버
 
         int cnt = 4;
