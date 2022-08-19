@@ -32,7 +32,9 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Authority authority;
 
-	@OneToMany
+
+
+	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
 	private List<Article> articleList = new ArrayList<>();
 
@@ -50,4 +52,26 @@ public class Member {
 		this.password = password;
 		this.authority = authority;
 	}
+
+	//member에 article을 추가해준다.
+	public void addArticle(Article article) {
+		this.articleList.add(article);
+	}
+
+    public void removeArticle(Article article) {this.articleList.remove(article);
+	}
+
+	public void addComment(Comment comment) {this.commentList.add(comment);
+	}
+
+	public void removeComment(Comment comment) {this.commentList.remove(comment);
+	}
+
+	public void addHeart(Heart heart) {
+		this.heartList.add(heart);
+	}
+	public void removeHeart(Heart heart) {
+		this.heartList.remove(heart);
+	}
+
 }

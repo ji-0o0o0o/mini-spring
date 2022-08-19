@@ -3,6 +3,7 @@ package com.hanghea99.minispring.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hanghea99.minispring.model.dto.ArticleRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Article {
+public class Article  extends Timestamped {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -27,8 +28,15 @@ public class Article {
 	@Column(nullable = false, length = 1000)
 	private String content;
 
-	@JsonIgnore
+
+	private Boolean isDone = false;
+
 	private String imgUrl;
+
+	private Long selectedCommentId;
+
+	@Enumerated(EnumType.STRING)
+	private Language language;
 
 	@JsonIgnore
 	private int heartCnt;
@@ -46,4 +54,63 @@ public class Article {
 	@OneToMany(mappedBy = "article")
 	@JsonIgnore
 	private List<Heart> heartList = new ArrayList<>();
+
+	@Column
+	@ElementCollection
+	private List<Long> memberId;
+
+	private int memeCnt;
+
+
+	public Article(ArticleRequestDto articleRequestDto, Member member) {
+		this.username = member.getUsername();
+		this.title = articleRequestDto.getTitle();
+		this.content = articleRequestDto.getContent();
+		this.member = member;
+	}
+
+	public void updateArticle(ArticleRequestDto articleRequestDto) {
+		this.content = articleRequestDto.getContent();
+	}
+
+	public void addComment(Comment comment) {
+		this.commentList.add(comment);
+	}
+	public void removeComment(Comment comment) {
+		this.commentList.remove(comment);
+	}
+
+	public void addHeart(Heart heart) {
+		this.heartList.add(heart);
+	}
+	public void removeHeart(Heart heart) {
+		this.heartList.remove(heart);
+	}
+
+	public void setHeartCnt(int heartListSize) {
+		this.heartCnt = heartListSize;
+	}
+	public void setSelectedComment(Long selectedCommentId) {
+		this.selectedCommentId = selectedCommentId;
+		this.isDone = true;
+	}
+	public void setImgUrl(String url) {
+		this.imgUrl = url;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+	public void addMeme(Long mem){
+		this.memberId.add(mem);
+	}
+	public void removeMeme(Long mem){
+		this.memberId.remove(mem);
+	}
+
+	public void setMemeCnt(int memeCnt) {
+		this.memeCnt = memeCnt;
+	}
 }
+

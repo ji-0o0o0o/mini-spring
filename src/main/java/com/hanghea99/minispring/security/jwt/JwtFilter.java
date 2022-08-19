@@ -21,7 +21,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+//	public static final String AUTHORIZATION_HEADER = "Cookie";
 	public static final String AUTHORIZATION_HEADER = "Authorization";
+//	public static final String BEARER_PREFIX = "jwt=";
 	public static final String BEARER_PREFIX = "Bearer ";
 
 	private final TokenProvider tokenProvider;
@@ -30,6 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
 		String jwt = resolveToken(request);
+//		String jwt = request.getHeader(AUTHORIZATION_HEADER); ->
+
 
 		if(jwt == null){
 			request.setAttribute("exception", Code.UNKNOWN_ERROR.getCode());
@@ -42,9 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			}
 		} catch (ExpiredJwtException e){
 			request.setAttribute("exception", Code.EXPIRED_TOKEN.getCode());
-		} catch (MalformedJwtException e){
-			request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
-		} catch (SignatureException e){
+		} catch (MalformedJwtException | SignatureException e){
 			request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
 		} catch(JwtException e){
 			request.setAttribute("exception", Code.UNKNOWN_ERROR);
@@ -54,8 +56,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	private String resolveToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-			return bearerToken.substring(7);
+			return bearerToken.substring(BEARER_PREFIX.length());
 		}
 		return null;
 	}

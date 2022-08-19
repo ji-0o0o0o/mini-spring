@@ -18,10 +18,20 @@ public class Heart {
 	private Member member;
 
 	@ManyToOne
-	@JoinColumn(name = "POST_ID")
+	@JoinColumn(name = "ARTICLE_ID")
 	private Article article;
 
 	@ManyToOne
 	@JoinColumn(name = "COMMENT_ID")
 	private Comment comment;
+
+
+	public Heart(Member member, Article article) {
+		this.member = member;
+		this.article = article;
+	}
+	public Heart(Member member, Comment comment) {
+		this.member = member;
+		this.comment = comment;
+	}
 }
